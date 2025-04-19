@@ -1,9 +1,11 @@
 import json
 import time
+import random
 
 roscos_disponibles = [
-    "rosco_facil.json",
+    "rosco_random.json",
     "rosco_pokemon.json",
+    "rosco_biologico.json",
 ]
 
 print("Tipos de rosco disponibles:")
@@ -23,7 +25,15 @@ except ValueError:
 
 archivo_rosco = roscos_disponibles[opcion - 1]
 with open(archivo_rosco, "r", encoding="utf-8") as f:
-    preguntas = json.load(f)
+    opciones_por_letra = json.load(f)
+
+# Elegir una definición aleatoria por letra
+preguntas = {}
+for letra, lista_opciones in opciones_por_letra.items():
+    if isinstance(lista_opciones[0], list):  # múltiples opciones
+        preguntas[letra] = random.choice(lista_opciones)
+    else:  # compatibilidad con estructura vieja (una sola opción)
+        preguntas[letra] = lista_opciones
 
 estado = {letra: "pendiente" for letra in preguntas}
 aciertos = 0
